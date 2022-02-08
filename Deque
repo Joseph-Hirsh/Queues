@@ -1,32 +1,113 @@
 import java.util.Iterator;
 
 public class Deque<Item> implements Iterable<Item> {
-    public Deque() {
+    
+	private Node first;
+	private Node last; 
+	private int size;
+	
+	private class Node {
+		Item item;
+		Node next;
+	}
+	
+	
+	//construct and empty deque
+	public Deque() {
         
     }
+	
+	//is the deque empty?
     public boolean isEmpty() {
+    	return (first == null);
         
     }
+    
+    //return the number of items on the deque
     public int size() {
-        
+    	return size;
     }
+    
+    //add the item to the front
     public void addFirst(Item item) {
-        
+    	if(isEmpty()) {
+    		first = new Node();
+    		last = first;
+    	} else {
+    		Node oldFirst = first;
+        	first.next = oldFirst;
+    	}
+		first.item = item;
+		size++;
     }
+    
+    //add the item to the back
     public void addLast(Item item) {
-        
+    	if(isEmpty()) {
+    		last = new Node();
+    		first = last;
+    	} else {
+    		Node oldLast = last;
+        	last.next = oldLast;
+    	}
+    	last.item = item;
+    	size++;
     }
-    public void removeFirst() {
-        
+    
+    //remove and return the item from the front
+    public Item removeFirst() {
+    	Item item = first.item;
+    	if(size() == 1) {
+    		first = null;
+    	} else if(size() == 2){
+        	first = first.next;
+        	last = first;
+    	} else {
+        	first = first.next;
+    	}
+        size--;
+    	return item; 
     }
+    
+    //remove and return the item from the back
     public Item removeLast() {
+    	Item item = last.item;
+    	if(size() == 1) {
+    		last = null;
+    	} else if(size() == 2){
+        	last = last.next;
+        	first = last;
+    	} else {
+        	last = last.next;
+    	}
+        size--;
+    	return item; 
         
     }
+    
+    //return an iterator over items in order from front to back
     public Iterator<Item> iterator() {
+    	return new DequeIterator<Item>();
         
     }
+
+    private class DequeIterator<Item> implements Iterator<Item>{
+    	private Node current = first;
+    	public boolean hasNext() {
+    		return current != null;
+    	}
+    	public Item next() {
+    		Item item = current.item;
+    		current = current.next;
+    		return item;
+    	}
+    }
+    
+    
+
+    
+    //unit testing (required)
     public static void main(String[] args) {
         
     }
 }
-
