@@ -1,0 +1,46 @@
+import java.util.Iterator;
+
+public class RandomizedQueue<Item> implements Iterable<Item> {
+    public Item[] queue = (Item[]) new Object[2];
+    public int size = 0;
+    public int tail = 0;
+    // construct an empty randomized queue
+    public RandomizedQueue() {
+
+    }
+    // is the randomized queue empty
+    public boolean isEmpty() {
+        return queue == null;
+    }
+    // return the number of items on the randomized queue
+    public int size() {
+        return tail;
+    }
+    // add the item
+    public void enqueue(Item item) {
+        if (tail == size) {
+            size *= 2;
+            Item[] temporary = (Item[]) new Object[size];
+            System.arraycopy(queue, 0, temporary, 0, tail);
+            queue = temporary;
+        } else {
+            queue[tail] = item;
+        }
+    }
+    // remove and return a random item
+    public Item dequeue() {
+        
+    }
+    // return a random item (but do not remove it)
+    public Item sample() {
+
+    }
+    // return an independent iterator over items in random order
+    public Iterator<Item> iterator() {
+
+    }
+    // unit testing
+    public static void main(String[] args) {
+
+    }
+}
