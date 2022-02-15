@@ -22,9 +22,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return queueSize;
     }
     // resize the queue
-    private void resize(double resizeFactor) {
+    public void resize(int newSize) {
+    	//we should be able to get rid of the oldArraySize variable
         int oldArraySize = arraySize;
-        arraySize *= resizeFactor;
+        arraySize = newSize;
         Item[] temporary = (Item[]) new Object[arraySize];
         int nextOpen = 0;
 
@@ -40,7 +41,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // add the item
     public void enqueue(Item item) {
         if (tail == arraySize) {
-            resize(2);
+            resize(arraySize);
         }
 
         queue[tail] = item;
@@ -57,7 +58,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         queue[itemIndex] = null;
 
         if(tail <= arraySize / 4){
-            resize(0.5);
+            resize(arraySize/2);
         }
 
         return itemReturn;
@@ -72,21 +73,49 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return queue[item];
     }
     // return an independent iterator over items in random order
-    public Iterator<Item> iterator() {
-        public int current = 0;
-        public Item hasNext() {
-            if(arraySize != tail){
-                resize();
-            }
-            //check the next guy if it equals null
-
-        }
-        public Item next() {
-
-        }
+    @Override
+    public Iterator<Item> iterator(){
+    	return new rqIterator();
+    }
+    
+    private class rqIterator implements Iterator {
+        private Item current = queue[0];
+        private int index = 0;
+        public boolean hasNext() {
+           if(arraySize != tail){
+               resize(tail);
+           } 
+           return (current != null);
+            
+       }
+       public Item next() {
+           Item item = current;
+           current = queue[++index];
+           return item;
+    	   
+       }
     }
     // unit testing
     public static void main(String[] args) {
-
+    	RandomizedQueue<Character> tester = new RandomizedQueue<Character>();
+    	tester.enqueue('A');
+    	tester.enqueue('B');
+    	tester.enqueue('C');
+    	tester.enqueue('D');
+    	System.out.print("Tester is: ");
+    	for(char c : tester) {
+    		System.out.print(c + ", ");
+    	}
+    	System.out.println();
+    	System.out.println(tester.dequeue());
+    	System.out.println(tester.dequeue());
+    	System.out.println(tester.dequeue());
+    	System.out.println(tester.dequeue());
+    	System.out.print("Tester is: ");
+    	for(char c : tester) {
+    		System.out.print(c + ", ");
+    	}
+    	
     }
+
 }
