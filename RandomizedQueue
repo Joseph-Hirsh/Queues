@@ -1,3 +1,4 @@
+import java.sql.Array;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -9,7 +10,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // construct an empty randomized queue
     public RandomizedQueue() {
         queue = (Item[]) new Object[2];
-        arraySize = 0;
+        arraySize = 2;
         queueSize = 0;
         tail = 0;
     }
@@ -23,27 +24,27 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
     // resize the queue
     public void resize(int newSize) {
-    	//we should be able to get rid of the oldArraySize variable
-        int oldArraySize = arraySize;
-        arraySize = newSize;
-        Item[] temporary = (Item[]) new Object[arraySize];
+        //we should be able to get rid of the oldArraySize variable
+        Item[] temporary = (Item[]) new Object[newSize];
         int nextOpen = 0;
 
-        for (int i = 0; i < oldArraySize; i++) {
+        for (int i = 0; i < arraySize; i++) {
             if (queue[i] != null) {
                 temporary[nextOpen] = queue[i];
                 nextOpen++;
             }
+            System.out.println();
             queue = temporary;
             tail = queueSize;
+            arraySize = newSize;
         }
     }
     // add the item
     public void enqueue(Item item) {
         if (tail == arraySize) {
-            resize(arraySize);
+            resize(arraySize * 2);
         }
-
+        queueSize ++;
         queue[tail] = item;
         tail++;
     }
@@ -60,62 +61,63 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if(tail <= arraySize / 4){
             resize(arraySize/2);
         }
-
+        queueSize --;
         return itemReturn;
     }
     // return a random item (but do not remove it)
     public Item sample() {
         Random randomizer = new Random();
-        int item;
+        int itemIndex;
         do {
-            item = randomizer.nextInt(queueSize);
-        } while ((queue[item] == null));
-        return queue[item];
+            itemIndex = randomizer.nextInt(queueSize);
+            if (itemIndex == tail - 1) tail--;
+        } while ((queue[itemIndex] == null));
+        return queue[itemIndex];
     }
     // return an independent iterator over items in random order
     @Override
     public Iterator<Item> iterator(){
-    	return new rqIterator();
+        return new rqIterator();
     }
-    
+
     private class rqIterator implements Iterator {
         private Item current = queue[0];
         private int index = 0;
         public boolean hasNext() {
-           if(arraySize != tail){
-               resize(tail);
-           } 
-           return (current != null);
-            
-       }
-       public Item next() {
-           Item item = current;
-           current = queue[++index];
-           return item;
-    	   
-       }
+            if (arraySize != queueSize){
+                resize(queueSize);
+            }
+            return index < arraySize;
+        }
+        public Item next() {
+            Item item = current;
+            current = queue[++index];
+            return item;
+
+        }
     }
     // unit testing
     public static void main(String[] args) {
-    	RandomizedQueue<Character> tester = new RandomizedQueue<Character>();
-    	tester.enqueue('A');
-    	tester.enqueue('B');
-    	tester.enqueue('C');
-    	tester.enqueue('D');
-    	System.out.print("Tester is: ");
-    	for(char c : tester) {
-    		System.out.print(c + ", ");
-    	}
-    	System.out.println();
-    	System.out.println(tester.dequeue());
-    	System.out.println(tester.dequeue());
-    	System.out.println(tester.dequeue());
-    	System.out.println(tester.dequeue());
-    	System.out.print("Tester is: ");
-    	for(char c : tester) {
-    		System.out.print(c + ", ");
-    	}
-    	
+        RandomizedQueue<Character> tester = new RandomizedQueue<Character>();
+        tester.enqueue('A');
+        tester.enqueue('B');
+        tester.enqueue('C');
+        tester.enqueue('D');
+        System.out.print("Tester is: ");
+        System.out.println();
+        for (char c : tester) {
+            System.out.print(c + ", ");
+        }
+        System.out.println();
+        System.out.println(tester.dequeue());
+        System.out.println(tester.dequeue());
+        System.out.println(tester.dequeue());
+        System.out.println(tester.dequeue());
+        System.out.print("Tester is: ");
+        for(char c : tester) {
+            System.out.print(c + ", ");
+        }
+
     }
 
 }
