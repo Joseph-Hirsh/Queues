@@ -1,0 +1,29 @@
+import java.util.Scanner;
+
+public class Permutation {
+	int k;
+	RandomizedQueue<String>  strings;
+	public Permutation() {
+		strings = new RandomizedQueue();
+
+	}
+	Scanner scanner = new Scanner(System.in);
+	
+	public static void main(String args[]) {
+		Permutation perm = new Permutation();
+		System.out.println("How many will you want to print?");
+		perm.k = Integer.parseInt(perm.scanner.next());
+		
+		System.out.println("What strings will you use?");
+		String toAdd = perm.scanner.next();
+		while(toAdd != "--") {
+			perm.strings.enqueue(toAdd);
+		}
+		
+		System.out.println("OK, here you go:");
+		for(int i = 0; i < perm.k; i++) {
+			System.out.println(perm.strings.dequeue());
+		}
+	}
+
+}
