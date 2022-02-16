@@ -5,13 +5,11 @@ import java.util.Random;
 public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item[] queue;
     public int arraySize;
-    public int queueSize;
     public int tail;
     // construct an empty randomized queue
     public RandomizedQueue() {
         queue = (Item[]) new Object[2];
         arraySize = 2;
-        queueSize = 0;
         tail = 0;
     }
     // is the randomized queue empty
@@ -20,31 +18,24 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
     // return the number of items on the randomized queue
     public int size() {
-        return queueSize;
+        return tail;
     }
     // resize the queue
     public void resize(int newSize) {
         //we should be able to get rid of the oldArraySize variable
         Item[] temporary = (Item[]) new Object[newSize];
-        int nextOpen = 0;
 
-        for (int i = 0; i < arraySize; i++) {
-            if (queue[i] != null) {
-                temporary[nextOpen] = queue[i];
-                nextOpen++;
-            }
-            System.out.println();
-            queue = temporary;
-            tail = queueSize;
-            arraySize = newSize;
+        for (int i = 0; i < tail; i++) {
+            temporary[i] = queue[i];
         }
+        queue = temporary;
+        arraySize = newSize;
     }
     // add the item
     public void enqueue(Item item) {
         if (tail == arraySize) {
             resize(arraySize * 2);
         }
-        queueSize ++;
         queue[tail] = item;
         tail++;
     }
@@ -52,46 +43,38 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item dequeue() {
         Random randomizer = new Random();
         int itemIndex;
-        do {
-            itemIndex = randomizer.nextInt(queueSize);
-        } while ((queue[itemIndex] == null));
+        itemIndex = randomizer.nextInt(tail);
+        
         Item itemReturn = queue[itemIndex];
-        queue[itemIndex] = null;
-
+        queue[itemIndex] = queue[tail-1];
+        queue[tail-1] = null;
         if(tail <= arraySize / 4){
             resize(arraySize/2);
         }
-        queueSize --;
+        tail --;
         return itemReturn;
     }
     // return a random item (but do not remove it)
     public Item sample() {
         Random randomizer = new Random();
-        int itemIndex;
-        do {
-            itemIndex = randomizer.nextInt(queueSize);
-            if (itemIndex == tail - 1) tail--;
-        } while ((queue[itemIndex] == null));
-        return queue[itemIndex];
+        return queue[randomizer.nextInt(tail)];
     }
     // return an independent iterator over items in random order
     @Override
     public Iterator<Item> iterator(){
-        return new rqIterator();
+
+    	return new rqIterator();
     }
 
     private class rqIterator implements Iterator {
-        private Item current = queue[0];
         private int index = 0;
+      
         public boolean hasNext() {
-            if (arraySize != queueSize){
-                resize(queueSize);
-            }
-            return index < arraySize;
+            return index < tail;
         }
         public Item next() {
-            Item item = current;
-            current = queue[++index];
+            Item item = queue[index];
+            index++;
             return item;
 
         }
@@ -107,6 +90,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         System.out.println();
         for (char c : tester) {
             System.out.print(c + ", ");
+        }
+        System.out.println();
+        System.out.println();
+        System.out.print("4 samples are: ");
+        System.out.println();
+        for (int i = 0; i < 4; i++) {
+            System.out.print(tester.sample() + ", ");
         }
         System.out.println();
         System.out.println(tester.dequeue());
