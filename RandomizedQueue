@@ -68,12 +68,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private class rqIterator implements Iterator {
         private int index = 0;
+        private RandomizedQueue<Item> copy;
+        public rqIterator() {
+        	 for (int i = 0; i < tail; i++) {
+        		copy = new RandomizedQueue<Item>();
+             	copy.enqueue(queue[i]);
+             }
+        }
+       
       
         public boolean hasNext() {
-            return index < tail;
+            return index < copy.tail;
         }
         public Item next() {
-            Item item = queue[index];
+            Item item = copy.dequeue();
             index++;
             return item;
 
