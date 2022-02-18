@@ -42,14 +42,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // remove and return a random item
     public Item dequeue() {
         Random randomizer = new Random();
-        int itemIndex;
-        itemIndex = randomizer.nextInt(tail);
-        
+        int itemIndex = randomizer.nextInt(tail);
+
         Item itemReturn = queue[itemIndex];
-        queue[itemIndex] = queue[tail-1];
-        queue[tail-1] = null;
+        queue[itemIndex] = queue[tail - 1];
+        queue[tail - 1] = null;
         if(tail <= arraySize / 4){
-            resize(arraySize/2);
+            resize(arraySize / 2);
         }
         tail --;
         return itemReturn;
@@ -62,23 +61,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // return an independent iterator over items in random order
     @Override
     public Iterator<Item> iterator(){
-
-    	return new rqIterator();
+        return new rqIterator();
     }
 
     private class rqIterator implements Iterator {
-        private int index = 0;
+        private int index;
         private RandomizedQueue<Item> copy;
         public rqIterator() {
-        	 for (int i = 0; i < tail; i++) {
-        		copy = new RandomizedQueue<Item>();
-             	copy.enqueue(queue[i]);
-             }
+            index = 0;
+            copy = new RandomizedQueue();
+            for (int i = 0; i < tail; i++) {
+                copy.enqueue(queue[i]);
+            }
         }
-       
-      
         public boolean hasNext() {
-            return index < copy.tail;
+            return index < copy.arraySize && tail != 0;
         }
         public Item next() {
             Item item = copy.dequeue();
@@ -90,29 +87,35 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // unit testing
     public static void main(String[] args) {
         RandomizedQueue<Character> tester = new RandomizedQueue<Character>();
+
         tester.enqueue('A');
         tester.enqueue('B');
         tester.enqueue('C');
         tester.enqueue('D');
         System.out.print("Tester is: ");
         System.out.println();
+
         for (char c : tester) {
             System.out.print(c + ", ");
         }
+
         System.out.println();
         System.out.println();
         System.out.print("4 samples are: ");
         System.out.println();
+
         for (int i = 0; i < 4; i++) {
             System.out.print(tester.sample() + ", ");
         }
+
         System.out.println();
         System.out.println(tester.dequeue());
         System.out.println(tester.dequeue());
         System.out.println(tester.dequeue());
         System.out.println(tester.dequeue());
         System.out.print("Tester is: ");
-        for(char c : tester) {
+
+        for (char c : tester) {
             System.out.print(c + ", ");
         }
 
