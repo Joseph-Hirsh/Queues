@@ -1,0 +1,47 @@
+import java.util.Iterator;
+
+public class Josephus<String> implements Iterable<String>{
+	int n;
+	int m;
+	Node first;
+	private String[] listOfNames = ["Dativus", "Devember", "Digitus", "Felicitas", "Felix", "Leo", "Lucinus", "Lucius", "Margarita", "Simplicia", "Remus", "Zeno", "Romulus", "Aphrodisia", "Euphranticus"];
+	
+	public Josephus(int n, int m) {
+		this.n = n;
+		this.m = m;
+		first = new Node();
+		first.name = listOfNames[0];
+		Node prev = first; 
+		for (int i = 1; i < n-1; i++) {
+			Node current = new Node();
+			current.previous = prev;
+			prev.next = current;
+			current.name = listOfNames[i];
+			prev = current;
+		}
+		Node current = new Node();
+		current.previous = prev;
+		prev.next = current;
+		current.next = first;
+		current.name = listOfNames[n-1];
+		
+	}
+	
+	private class Node {
+		 String name;
+	     Node next;
+	     Node previous;
+	     public void remove() {
+	    	 //TODO
+	     }
+	}
+	
+	
+	@Override
+	public Iterator iterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+
+}
